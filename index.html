@@ -8,7 +8,7 @@
   :root{ --bg1:#123524;--bg2:#0a7e6e;--accent:#00ff88;--danger:#ff4444; }
   *{box-sizing:border-box}
   html,body{height:100%}
-  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,'Trebuchet MS',sans-serif;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff;margin:0;display:flex;flex-direction:column;align-items:center}
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,'Trebuchet MS',sans-serif;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff;margin:0;display:flex;flex-direction:column;align-items:center;}
   h1{margin:18px 12px 4px;font-size:clamp(1.6rem,3.5vw,2.6rem);text-shadow:2px 2px #000}
   .sub{opacity:.85;margin-bottom:8px;font-size:.95rem}
   .wrap{width:min(960px,100%);padding:0 12px 16px}
@@ -21,7 +21,7 @@
   select,.stat{padding:10px;border-radius:10px;border:none;font-size:15px;background:#ffffff;color:#111;font-weight:600;min-width:160px}
   .stat{background:#0d2e25;color:#eafcf3;border:1px solid rgba(255,255,255,.12)}
   .reels{display:flex;justify-content:center;margin:22px 0 10px;gap:16px;width:100%}
-  .reel{width:clamp(96px,18vw,140px);height:clamp(96px,18vw,140px);background:#fff;color:#000;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:clamp(18px,3.2vw,26px);font-weight:800;box-shadow:0 6px 14px rgba(0,0,0,0.45);padding:8px}
+  .reel{width:clamp(96px,18vw,140px);height:clamp(96px,18vw,140px);background:#fff;color:#000;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:clamp(18px,3.2vw,26px);font-weight:800;box-shadow:2px 2px 2px #0003;}
   .btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:8px 0 0}
   button{padding:12px 18px;font-size:17px;border:none;border-radius:10px;cursor:pointer;font-weight:800}
   #spinBtn{background:var(--accent);color:#000}
@@ -34,6 +34,10 @@
   canvas{position:fixed;inset:0;pointer-events:none;z-index:9999}
   footer{margin-top:auto;opacity:.75;padding:8px 0 14px;font-size:.85rem}
 </style>
+<!-- Preload audio for smooth experience -->
+<link rel="preload" href="sounds/spin.mp3" as="audio">
+<link rel="preload" href="sounds/tick.mp3" as="audio">
+<link rel="preload" href="sounds/jackpot.mp3" as="audio">
 </head>
 <body>
   <h1>🎰 FPL Slot Machine — Pro (Random)</h1>
@@ -127,14 +131,23 @@
   const muteBtn = document.getElementById("muteBtn");
   const saveBtn = document.getElementById("saveBtn");
 
-  // Audio placeholders disabled (no external sounds needed)
-  const spinMusic = new Audio();
-  const tickSound = new Audio();
-  const jackpotSound = new Audio();
-  [spinMusic, tickSound, jackpotSound].forEach(a => { a.volume = 0.0; a.muted = true; });
+  // --- AUDIO SETUP ---
+  // Make sure to include the audio files in the public 'sounds/' directory
+  const spinMusic = new Audio('sounds/spin.mp3');
+  const tickSound = new Audio('sounds/tick.mp3');
+  const jackpotSound = new Audio('sounds/jackpot.mp3');
+  spinMusic.volume = 0.6;
+  tickSound.volume = 0.2;
+  jackpotSound.volume = 0.8;
 
-  let spinning = false, muted = true;
-  function setMuted(on){ muted = on; }
+  let spinning = false, muted = false;
+  function setMuted(on){
+    muted = on;
+    [spinMusic, tickSound, jackpotSound].forEach(a => a.muted = on);
+    muteBtn.textContent = muted ? "🔇 Sound Off" : "🔊 Sound On";
+    muteBtn.setAttribute("aria-pressed", muted ? "true" : "false");
+  }
+  muteBtn.addEventListener("click", () => setMuted(!muted));
 
   function applyTheme(name){
     const th = themes[name] || themes.Default;
@@ -228,12 +241,20 @@
     const starts = [start,start,start];
     const done = [false,false,false];
 
+    // Play spin sound!
+    if (!muted) { spinMusic.currentTime = 0; spinMusic.play(); }
+
     function updateReel(i, now){
       const elapsed = now - starts[i];
       if (elapsed < durations[i]){
         const rand = Math.floor(Math.random()*faces.length);
         reels[i].textContent = faces[rand];
-        if (elapsed - (reels[i]._lastTick||0) > 110){ reels[i]._lastTick = elapsed; }
+        // Play tick sound on reel "tick"
+        if (!muted && elapsed - (reels[i]._lastTick||0) > 110){ 
+          tickSound.currentTime = 0; 
+          tickSound.play(); 
+          reels[i]._lastTick = elapsed; 
+        }
       } else if (!done[i]){
         reels[i].textContent = isJackpot ? jackpotSymbol : faces[Math.floor(Math.random()*faces.length)];
         done[i] = true;
@@ -256,6 +277,7 @@
       state.jackpots++; saveState(); refreshStats();
       text = "🎉 YOUR CAPTAIN IS ... " + symbol + " 🎉";
       makeConfetti(); for(let i=0;i<4;i++) setTimeout(makeFirework, i*600);
+      if (!muted) { jackpotSound.currentTime = 0; jackpotSound.play(); }
     } else {
       const vals = reels.map(r=>r.textContent);
       text = vals.join(" | ");
@@ -289,7 +311,9 @@
   themeSelect.value = state.theme || "Default";
   applyTheme(themeSelect.value);
   refreshStats();
-})();</script>
+  setMuted(false); // sound on by default
+})();
+</script>
 <footer>Made with SLLVP who is accountant not Developer💚</footer>
 </body>
 </html>
