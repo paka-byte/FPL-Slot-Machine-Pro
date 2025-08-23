@@ -142,7 +142,7 @@
   let state = {
     spinCount: 0,
     jackpots: 0,
-    names: ["Salah","Haaland","Son","Saka","Bruno","KDB"],
+    names: ["Salah","Haaland","Ekitike","Saka","Bruno","cucurella"],
     theme: "Default",
     history: [], // last 24
     jackpotChance: 0.2 // ➜ start at 20%
@@ -372,7 +372,7 @@
     let text;
     if (isJackpot) {
       state.jackpots++; saveState(); refreshStats();
-      text = "🎉 GOALLLLLLLLLLLLLLL! " + symbol + " 🎉";
+      text = "🎉 คุณควรจะกัปตัน... " + symbol + " 🎉";
       try { jackpotSound.currentTime = 0; if(!muted) jackpotSound.play().catch(()=>{});} catch(e){}
       makeConfetti();
       for(let i=0;i<4;i++) setTimeout(makeFirework, i*600);
