@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>FPL Slot Machine — Pro (Random)</title>
+<title>FPL Slot Machine — Pro (DataFPL)</title>
 <style>
   :root{ --bg1:#123524;--bg2:#0a7e6e;--accent:#00ff88;--danger:#ff4444; }
   *{box-sizing:border-box}
@@ -37,7 +37,7 @@
 </head>
 <body>
   <h1>🎰 FPL Slot Machine — Pro (Random)</h1>
-  <div class="sub">Weighted jackpot: starts <b>20%</b>, +<b>10%</b> each miss, resets to 20% on hit.</div>
+  <div class="sub">Weighted jackpot: starts <b>20%</b>, +<b>10%</b> each miss, resets to 20% on hit (Just for fun).</div>
 
   <div class="wrap">
     <div class="controls">
@@ -46,10 +46,10 @@
         <div class="input-container" id="inputs">
           <input id="side1" value="Salah">
           <input id="side2" value="Haaland">
-          <input id="side3" value="Son">
+          <input id="side3" value="Ekitike">
           <input id="side4" value="Saka">
           <input id="side5" value="Bruno">
-          <input id="side6" value="KDB">
+          <input id="side6" value="Palmer">
         </div>
         <div style="opacity:.7;font-size:.9rem;margin-top:6px">Tip: press Enter to save names. Your setup persists automatically.</div>
       </div>
@@ -58,7 +58,7 @@
         <h3>Theme & Stats</h3>
         <div class="row">
           <select id="themeSelect" title="Theme">
-            <option value="Default">Default (Green)</option>
+            <option value="Default FPL">Default (Green)</option>
             <option value="Arsenal">Arsenal</option>
             <option value="Liverpool">Liverpool</option>
             <option value="ManCity">Man City</option>
@@ -108,7 +108,7 @@
 
   let state = {
     spinCount: 0, jackpots: 0,
-    names: ["Salah","Haaland","Son","Saka","Bruno","KDB"],
+    names: ["Salah","Haaland","Ekitike","Saka","Bruno","Palmer"],
     theme: "Default", history: [],
     jackpotChance: 0.2 // start 20%
   };
@@ -254,7 +254,7 @@
     let text;
     if (isJackpot){
       state.jackpots++; saveState(); refreshStats();
-      text = "🎉 GOALLLLLLLLLLLLLLL! " + symbol + " 🎉";
+      text = "🎉 YOUR CAPTAIN IS ... " + symbol + " 🎉";
       makeConfetti(); for(let i=0;i<4;i++) setTimeout(makeFirework, i*600);
     } else {
       const vals = reels.map(r=>r.textContent);
@@ -290,6 +290,6 @@
   applyTheme(themeSelect.value);
   refreshStats();
 })();</script>
-<footer>Made with 💚</footer>
+<footer>Made with SLLVP who is accountant not Developer💚</footer>
 </body>
 </html>
