@@ -88,7 +88,7 @@
       <button id="spinBtn">SPIN!</button>
       <button id="resetBtn">Play Again</button>
       <button id="muteBtn" aria-pressed="false">🔊 Sound On</button>
-      <button id="saveBtn" title="Save current result as an image">💾 Save Result</button>
+    //  <button id="saveBtn" title="Save current result as an image">💾 Save Result</button>
     </div>
 
     <div id="result" role="status" aria-live="polite"></div>
@@ -137,8 +137,8 @@
   const tickSound = new Audio('sounds/tick.mp3');
   const jackpotSound = new Audio('sounds/jackpot.mp3');
   spinMusic.volume = 0.6;
-  tickSound.volume = 0.3;
-  jackpotSound.volume = 0.8;
+  tickSound.volume = 0.5;
+  jackpotSound.volume = 0.85;
 
   let spinning = false, muted = false;
   function setMuted(on){
