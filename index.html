@@ -40,7 +40,7 @@
 <link rel="preload" href="sounds/jackpot.mp3" as="audio">
 </head>
 <body>
-  <h1>🎰 FPL Slot Machine — Pro (Random)</h1>
+  <h1>🎰 FPL Slot Machine — Pro (DataFPL)</h1>
   <div class="sub">Weighted jackpot: starts <b>20%</b>, +<b>10%</b> each miss, resets to 20% on hit (Just for fun).</div>
 
   <div class="wrap">
@@ -137,7 +137,7 @@
   const tickSound = new Audio('sounds/tick.mp3');
   const jackpotSound = new Audio('sounds/jackpot.mp3');
   spinMusic.volume = 0.6;
-  tickSound.volume = 0.2;
+  tickSound.volume = 0.3;
   jackpotSound.volume = 0.8;
 
   let spinning = false, muted = false;
@@ -276,7 +276,7 @@
     if (isJackpot){
       state.jackpots++; saveState(); refreshStats();
       text = "🎉 YOUR CAPTAIN IS ... " + symbol + " 🎉";
-      makeConfetti(); for(let i=0;i<4;i++) setTimeout(makeFirework, i*600);
+      makeConfetti(); for(let i=0;i<4;i++) setTimeout(makeFirework, i*1600);
       if (!muted) { jackpotSound.currentTime = 0; jackpotSound.play(); }
     } else {
       const vals = reels.map(r=>r.textContent);
